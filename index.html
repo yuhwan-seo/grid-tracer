@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<title>Grid Trace — My footprint grid map</title>
+<meta name="theme-color" content="#0B1220" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icons/icon-192.png" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<div id="map"></div>
+
+<!-- Top HUD: coverage gauge -->
+<div id="hud" class="panel">
+  <div class="gauge-wrap">
+    <svg id="gauge" viewBox="0 0 120 120">
+      <circle class="gauge-track" cx="60" cy="60" r="52"></circle>
+      <circle id="gaugeFill" class="gauge-fill" cx="60" cy="60" r="52"></circle>
+    </svg>
+    <div class="gauge-label">
+      <span id="gaugePct">0%</span>
+      <small>explored</small>
+    </div>
+  </div>
+  <div class="hud-stats">
+    <div class="stat">
+      <span id="visitedCount">0</span>
+      <label>visited</label>
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat">
+      <span id="totalCount">0</span>
+      <label>total</label>
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat">
+      <span id="cellSize">–</span>
+      <label>cell size</label>
+    </div>
+  </div>
+</div>
+
+<!-- GPS status badge -->
+<div id="gpsBadge" class="badge badge-idle">
+  <span class="dot"></span>
+  <span id="gpsText">GPS idle</span>
+</div>
+
+<!-- Bottom controls -->
+<div id="controls">
+  <label id="loadGridBtn" class="ctrl-btn" title="Load a GeoJSON grid file">
+    <input type="file" id="gridFileInput" accept=".geojson,.json" hidden />
+    <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 9h16M9 4v16" stroke="currentColor" stroke-width="1.4"/></svg>
+  </label>
+
+  <button id="followBtn" class="ctrl-btn" title="Follow my current location">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="currentColor"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+  </button>
+
+  <button id="startBtn" class="ctrl-btn ctrl-primary" title="Start / stop tracking">
+    <svg id="startIcon" viewBox="0 0 24 24"><path d="M6 4l14 8-14 8V4z" fill="currentColor"/></svg>
+  </button>
+
+  <button id="resetBtn" class="ctrl-btn ctrl-danger" title="Clear visit history">
+    <svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+
+  <button id="exportBtn" class="ctrl-btn" title="Export as GeoJSON (visited = red, unvisited = transparent)">
+    <svg viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+  </button>
+</div>
+
+<div id="toast"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+<script src="https://unpkg.com/proj4@2.9.2/dist/proj4.js"></script>
+<script src="js/app.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
